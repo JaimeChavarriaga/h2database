@@ -74,10 +74,10 @@ public class WebServlet extends HttpServlet {
 
     private String getAllowedFile(HttpServletRequest req, String requestedFile) {
         if (!allow(req)) {
-            return "notAllowed.jsp";
+            return "notAllowed.xhtml";
         }
         if (requestedFile.length() == 0) {
-            return "index.do";
+            return "index.xhtml";
         }
         return requestedFile;
     }
@@ -141,11 +141,6 @@ public class WebServlet extends HttpServlet {
             resp.sendError(HttpServletResponse.SC_NOT_FOUND);
             bytes = ("File not found: " + file).getBytes(StandardCharsets.UTF_8);
         } else {
-            if (session != null && file.endsWith(".jsp")) {
-                String page = new String(bytes, StandardCharsets.UTF_8);
-                page = PageParser.parse(page, session.map);
-                bytes = page.getBytes(StandardCharsets.UTF_8);
-            }
             resp.setContentType(mimeType);
             if (!cache) {
                 resp.setHeader("Cache-Control", "no-cache");
