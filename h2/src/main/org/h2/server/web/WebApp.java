@@ -153,13 +153,13 @@ public class WebApp {
             mimeType = "text/css";
         } else if ("html".equals(suffix) ||
                 "do".equals(suffix) ||
-                "jsp".equals(suffix)) {
+                "xhtml".equals(suffix)) {
             cache = false;
             mimeType = "text/html";
             if (session == null) {
                 session = server.createNewSession(
                         NetUtils.ipToShortForm(null, networkConnectionInfo.getClientAddr(), false).toString());
-                if (!"notAllowed.jsp".equals(file)) {
+                if (!"notAllowed.xhtml".equals(file)) {
                     file = "index.do";
                 }
             }
@@ -174,10 +174,10 @@ public class WebApp {
         trace(file);
         if (file.endsWith(".do")) {
             file = process(file, networkConnectionInfo);
-        } else if (file.endsWith(".jsp")) {
+        } else if (file.endsWith(".xhtml")) {
             switch (file) {
-            case "admin.jsp":
-            case "tools.jsp":
+            case "admin.xhtml":
+            case "tools.xhtml":
                 if (!checkAdmin(file)) {
                     file = process("adminLogin.do", networkConnectionInfo);
                 }
@@ -274,7 +274,7 @@ public class WebApp {
                 file = adminLogin();
                 break;
             default:
-                file = "error.jsp";
+                file = "error.xhtml";
                 break;
             }
         }
@@ -298,7 +298,7 @@ public class WebApp {
     private String adminLogin() {
         String password = attributes.getProperty("password");
         if (password == null || password.isEmpty() || !server.checkAdminPassword(password)) {
-            return "adminLogin.jsp";
+            return "adminLogin.xhtml";
         }
         String back = (String) session.remove("adminBack");
         session.put("admin", true);
@@ -345,7 +345,7 @@ public class WebApp {
                 }
                 Bnf bnf = session.getBnf();
                 if (bnf == null) {
-                    return "autoCompleteList.jsp";
+                    return "autoCompleteList.xhtml";
                 }
                 HashMap<String, String> map = bnf.getNextTokenList(sql);
                 String space = "";
@@ -388,7 +388,7 @@ public class WebApp {
         } catch (Throwable e) {
             server.traceError(e);
         }
-        return "autoCompleteList.jsp";
+        return "autoCompleteList.xhtml";
     }
 
     private String admin() {
@@ -397,7 +397,7 @@ public class WebApp {
         session.put("webExternalNames", server.getExternalNames());
         session.put("ssl", String.valueOf(server.getSSL()));
         session.put("sessions", server.getSessions());
-        return "admin.jsp";
+        return "admin.xhtml";
     }
 
     private String adminSave() {
@@ -469,7 +469,7 @@ public class WebApp {
         } catch (Exception e) {
             server.traceError(e);
         }
-        return "tools.jsp";
+        return "tools.xhtml";
     }
 
     private String adminStartTranslate() {
@@ -478,7 +478,7 @@ public class WebApp {
         Map<Object, Object> p2 = (Map<Object, Object>) p;
         String file = server.startTranslate(p2);
         session.put("translationFile", file);
-        return "helpTranslate.jsp";
+        return "helpTranslate.xhtml";
     }
 
     /**
@@ -488,7 +488,7 @@ public class WebApp {
      */
     protected String adminShutdown() {
         server.shutdown();
-        return "admin.jsp";
+        return "admin.xhtml";
     }
 
     private String index() {
@@ -528,14 +528,14 @@ public class WebApp {
         session.put("driver", PageParser.escapeHtmlData(info.driver));
         session.put("url", PageParser.escapeHtmlData(info.url));
         session.put("user", PageParser.escapeHtmlData(info.user));
-        return "index.jsp";
+        return "index.xhtml";
     }
 
     private String getHistory() {
         int id = Integer.parseInt(attributes.getProperty("id"));
         String sql = session.getCommand(id);
         session.put("query", PageParser.escapeHtmlData(sql));
-        return "query.jsp";
+        return "query.xhtml";
     }
 
     private static int addColumns(boolean mainSchema, DbTableOrView table, StringBuilder builder, int treeIndex,
@@ -872,7 +872,7 @@ public class WebApp {
             session.put("tree", "");
             session.put("error", getStackTrace(0, e, isH2));
         }
-        return "tables.jsp";
+        return "tables.xhtml";
     }
 
     private String getStackTrace(int id, Throwable e, boolean isH2) {
@@ -1004,10 +1004,10 @@ public class WebApp {
             }
             session.put("error", success);
             // session.put("error", "${text.login.testSuccessful}");
-            return "login.jsp";
+            return "login.xhtml";
         } catch (Exception e) {
             session.put("error", getLoginError(e, isH2));
-            return "login.jsp";
+            return "login.xhtml";
         }
     }
 
@@ -1042,10 +1042,10 @@ public class WebApp {
             session.put("user", user);
             session.remove("error");
             settingSave();
-            return "frame.jsp";
+            return "frame.xhtml";
         } catch (Exception e) {
             session.put("error", getLoginError(e, isH2));
-            return "login.jsp";
+            return "login.xhtml";
         }
     }
 
@@ -1086,7 +1086,7 @@ public class WebApp {
             }
             final Connection conn = session.getConnection();
             if (SysProperties.CONSOLE_STREAM && server.getAllowChunked()) {
-                String page = new String(server.getFile("result.jsp"), StandardCharsets.UTF_8);
+                String page = new String(server.getFile("result.xhtml"), StandardCharsets.UTF_8);
                 int idx = page.indexOf("${result}");
                 // the first element of the list is the header, the last the
                 // footer
@@ -1109,7 +1109,7 @@ public class WebApp {
                         return b.toString();
                     }
                 });
-                return "result.jsp";
+                return "result.xhtml";
             }
             String result;
             StringBuilder buff = new StringBuilder();
@@ -1122,7 +1122,7 @@ public class WebApp {
         } catch (Throwable e) {
             session.put("result", getStackTrace(0, e, session.getContents().isH2()));
         }
-        return "result.jsp";
+        return "result.xhtml";
     }
 
     /**
@@ -1179,7 +1179,7 @@ public class WebApp {
         Connection conn = session.getConnection();
         result = error + getResult(conn, -1, sql, true, true) + result;
         session.put("result", result);
-        return "result.jsp";
+        return "result.xhtml";
     }
 
     private int getMaxrows() {
