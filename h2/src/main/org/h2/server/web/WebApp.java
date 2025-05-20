@@ -66,6 +66,21 @@ import org.h2.util.Tool;
 import org.h2.util.Utils;
 import org.h2.value.DataType;
 
+import com.vaadin.flow.component.UI;
+import com.vaadin.flow.router.RouteConfiguration;
+import com.vaadin.flow.server.VaadinSession;
+import org.h2.server.web.views.AdminView;
+import org.h2.server.web.views.QueryView;
+import org.h2.server.web.views.IndexView;
+import org.h2.server.web.views.LoginView;
+import org.h2.server.web.views.FrameView;
+import org.h2.server.web.views.HeaderView;
+import org.h2.server.web.views.HelpView;
+import org.h2.server.web.views.NotAllowedView;
+import org.h2.server.web.views.ResultView;
+import org.h2.server.web.views.TablesView;
+import org.h2.server.web.views.ToolsView;
+
 /**
  * For each connection to a session, an object of this class is created.
  * This class is used by the H2 Console.
