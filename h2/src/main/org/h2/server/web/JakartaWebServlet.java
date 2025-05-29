@@ -21,11 +21,14 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import org.h2.util.NetworkConnectionInfo;
 
+import com.vaadin.flow.server.VaadinServlet;
+import com.vaadin.flow.server.VaadinServletConfiguration;
+
 /**
  * This servlet lets the H2 Console be used in a Jakarta servlet container
  * such as Tomcat or Jetty.
  */
-public class JakartaWebServlet extends HttpServlet {
+public class JakartaWebServlet extends VaadinServlet {
 
     private static final long serialVersionUID = 1L;
     private transient WebServer server;
@@ -50,6 +53,7 @@ public class JakartaWebServlet extends HttpServlet {
         server = new WebServer();
         server.setAllowChunked(false);
         server.init(args);
+        initializeVaadin();
     }
 
     @Override
@@ -166,4 +170,26 @@ public class JakartaWebServlet extends HttpServlet {
         doGet(req, resp);
     }
 
+    private void initializeVaadin() {
+        VaadinServletConfiguration configuration = new VaadinServletConfiguration();
+        configuration.setProductionMode(false);
+        configuration.setResourceCacheTime(3600);
+        configuration.setHeartbeatInterval(300);
+        configuration.setCloseIdleSessions(true);
+        configuration.setSendUrlsAsParameters(false);
+        configuration.setSyncIdCheck(true);
+        configuration.setXsrfProtectionEnabled(true);
+        configuration.setRequestTiming(true);
+        configuration.setPushMode(VaadinServletConfiguration.PushMode.AUTOMATIC);
+        configuration.setPushTransport(VaadinServletConfiguration.PushTransport.WEBSOCKET_XHR);
+        configuration.setWebComponentMode(VaadinServletConfiguration.WebComponentMode.AUTO);
+        configuration.setWebComponentExportMode(VaadinServletConfiguration.WebComponentExportMode.AUTO);
+        configuration.setWebComponentExportPackage("com.example");
+        configuration.setWebComponentExportPath("/web-component");
+        configuration.setWebComponentExportFileName("web-component.js");
+        configuration.setWebComponentExportBundle(true);
+        configuration.setWebComponentExportBundleFileName("web-component-bundle.js");
+        configuration.setWebComponentExportBundlePath("/web-component-bundle");
+        configuration.setWebComponentExportBundlePackage("com.example.bundle");
+    }
 }

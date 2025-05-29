@@ -20,6 +20,8 @@ import org.h2.bnf.context.DbContents;
 import org.h2.bnf.context.DbContextRule;
 import org.h2.message.DbException;
 
+import com.vaadin.flow.server.VaadinSession;
+
 /**
  * The web session keeps all data of a user session.
  * This class is used by the H2 Console.
@@ -270,6 +272,15 @@ class WebSession {
             }
         }
 
+    }
+
+    /**
+     * Get the Vaadin session for this web session.
+     *
+     * @return the Vaadin session
+     */
+    VaadinSession getVaadinSession() {
+        return VaadinSession.getCurrent();
     }
 
 }
